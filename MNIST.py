@@ -9,19 +9,6 @@ train_images, test_images = train_images / 255.0, test_images / 255.0
 num_classes = 10
 input_shape = (28, 28, 1)
 
-# model = tf.keras.Sequential(
-#     [
-#         tf.keras.Input(shape=input_shape),
-#         tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
-#         tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#         tf.keras.layers.Conv2D(6, kernel_size=(3, 3), activation="relu"),
-#         tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#         tf.keras.layers.Flatten(name="flatten"),
-#         tf.keras.layers.Dropout(0.5),
-#         tf.keras.layers.Dense(num_classes, activation="softmax"),
-#     ]
-# )
-
 
 model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.Conv2D(28, (3, 3), activation='relu', input_shape=(28, 28, 1)))
@@ -58,18 +45,6 @@ bar_iterations=2
 dim = np.shape(data[0])[0]
 print(dim)
 d=itek_barycentrics(data,bar_iterations)
-
-# bis = [bis_cons(d,ite,dim) for ite in range(bar_iterations+1)]
-
-# n_samples = len(X_train)
-
-
-# model0,history0=SMNN(bis[0],y_train,5000,verbose =True)
-# plt.plot(history0.history['loss'])
-# plt.show()
-
-
-
 
 
 bis = [bis_cons(d,ite,dim) for ite in range(bar_iterations+1)]

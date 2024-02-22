@@ -37,7 +37,7 @@ X_train,X_test,y_train,y_test = train_test_split(X_scaled,y,test_size=0.2)
 bar_iterations=2
 dim=4
 
-dic_sups = dic_supports(supports(bar_iterations,dim))
+#dic_sups = dic_supports(supports(bar_iterations,dim-1))
 
 sups = supports(bar_iterations,dim)
 
