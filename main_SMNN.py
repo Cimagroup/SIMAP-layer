@@ -1,63 +1,6 @@
 import numpy as np
 import itertools
 
-# #%% Matrices
-# def V(n):
-#   """
-#   Input: dimension of the n-simplex
-#   Output: matrix whose rows are the coordinates of a n-simplex centered
-#   at the origin in the unit n-sphere.
-#   """
-#   M= np.zeros((n+1,n))
-#   for i in range(n+1):
-#     for j in range(n):
-#       M[i,j]=entry_matrix(i,j,n)
-#   return M# n*M
-
-# def A(j,n):
-#   A=1
-#   while j<=n-1:
-#     A=(np.sqrt((j+1)^2-1)/(j+1))*A
-#     j+=1
-#   return A
-
-# def entry_matrix(i,j,n):
-#   val=A(j+1,n)
-#   if j>=i:
-#     entry=-val/(j+1)
-#   if j==i-1:
-#     entry = val
-#   if j<i-1:
-#     entry = 0
-#   if j==n-1 & i<n:
-#     val=-1/n
-#   if j==n-1 & i==n:
-#     val = 1
-#   return entry
-# #############################################################################
-
-
-# # Matriz para obtener las coordenadas baricéntricas
-# def M(n):#,Vm):
-#   """
-#   Input:
-#     dimension n
-#     Matrix of the maximal simplex.
-#   Output:
-#     Matrix to compute the barycentric coordinates.
-#   """
-#   m=np.zeros((n+1,n+1))
-#   for j in range(n+1):
-#     m[0,j]=1/(n+1)
-#   for i in range(1,n):
-#     m[i,i]=i/((i+1)*A(i,n))
-#     for j in range(i):
-#       m[i,j]=-1/((i+1)*A(i,n))
-#   for j in range(n):
-#     m[n,j]= -1/(n+1)
-#   m[n,n]=n/(n+1)
-#   return m
-#   #return np.linalg.inv(np.c_[np.ones(n+1), Vm] )
 
 def V(n):
     M= np.vstack((np.zeros(n),n*np.diag(np.ones(n))))
@@ -68,8 +11,6 @@ def M(n):
     M[0,0]=1
     return M
     
-
-# Matriz para reordenar
 
 def Q(n):
   q=np.zeros((n+1,n+1))
@@ -87,7 +28,6 @@ def P(n):
     p[i,i]=i+1
     p[i,i-1]=-i
   return p
-  #return np.linalg.inv(Q(n))
 
 #%% Barycentrics and indices managing
 
@@ -154,33 +94,6 @@ def composition(perm,dim):
       vertices_seq = vertices(undo_permutation(s.split("."),vertices_seq))
   return vertices_seq
 
-#Example:
-#composition("0.1.2|0.2.1.|1.2.0",2)
-#[[[0, 2]], [[0, 2], [0, 2, 1]], [[0, 2], [0, 2, 1], [0]]]
-
-# pairs barycentrics and vertices
-# def auxiliary(d1,d2,dim,iter):
-#   # iter: number of times barycentric applied
-#   # dim: dimension
-#   dim+=1
-#   iter+=1 # the reason is that we start with 0.1.2 for 0 barycentric subdivisions
-#   d1keys=list(d1.keys())
-#   d1_key = [v for v in d1keys if len(v.split("|"))==iter][0]
-#   list_bars = d1[d1_key]
-#   list_vertices = list(d2[d1_key])
-#   z=list(zip(list_vertices,list_bars))
-  # return z
-
-# Example:
-#auxiliary(d1,d2,2,0)
-#[(0, 0.10239322565748302), (1, 0.5642734410091838), (2, 0.3333333333333333)]
-#auxiliary(d1,d2,2,1)
-#[([0], 0.23094010767585044),
-# ([0, 1], 0.4618802153517006),
-# ([0, 1, 2], 0.3071796769724491)]
-
-
-
 
 from itertools import combinations, permutations
 def generate_vertices_level_0(dim):
@@ -221,16 +134,13 @@ def cartesian_coordinates(vertex,dim,Vm):
 
 #%% 
 
-
 def generate_vertices(n_iter,dim):
-  #str0 = ''.join([str(i) for i in range(dim+1)])#"012"
   init_vs = list(range(dim+1))
   vertices=[]
   if n_iter == 0:
     vertices = list(range(dim+1)) 
   else:
-    ps = [[".".join([str(y) for y in x]) for x in permutations(init_vs)]]*n_iter#[['.'.join(p) for p in permutations(str0)] for i in range(1,n_iter+1)]
-    # Tener cuidado con la permutación de str0
+    ps = [[".".join([str(y) for y in x]) for x in permutations(init_vs)]]*n_iter
     possible_perms=['|'.join(p) for p in itertools.product(*ps)]
     for p in possible_perms:
       comp=p
@@ -254,14 +164,6 @@ def dic_supports(sups):
     ds.append(itek_barycentrics(sup,i))
   return ds
 
-# def vert_ordering(d,dim,i):
-#   vertices_ordering=[]
-#   for j in d.keys():
-#     xy=auxiliary(d[j][0],d[j][1],dim,i)
-#     for x,y in xy:
-#       if x not in vertices_ordering:
-#         vertices_ordering.append(x)
-#   return vertices_ordering
 
     
 def bis_cons(d,bar_iterations,dim):
@@ -294,42 +196,12 @@ def matching_vertices(ite,dim):
     return indices
 
 
-# def general_matching(d,dim,ite):
-#   v_ords = []
-#   bis = []
-#   matchings = []
-#   for i in range(ite+1):
-#     bisi, v_ordi = bis_cons(d,dim,i)
-#     matching_i = matching_vertices(v_ordi,generate_vertices(i,dim))
-#     bis.append(bisi)
-#     v_ords.append(v_ordi)
-#     matchings.append(matching_i)
-#   return bis, v_ords, matchings
-
-# def reorder_matchings(matchings, bis,ite,dim):
-#   bis_ordered = []
-#   n_samples = len(bis[0])
-#   for index in range(ite+1):
-#     bs = bis[index]
-#     matching = matchings[index]
-#     bs_ordered=np.zeros((n_samples,len(generate_vertices(index,dim))))
-#     for (i,j) in matching:
-#       for k in range(n_samples):
-#         bs_ordered[k,j] = bs[k,i]
-#     bis_ordered.append(bs_ordered)
-#   return bis_ordered
-
-
-
-#######################
-
 
 import tensorflow as tf
 
 def SMNN(bis,y,epochs,init_weights=[],verbose=False):
-    #n_features = np.shape(bis)[1]
 
-    #%% labels update
+    #%% 
     n_classes = len(set(y))
     y_hot=tf.one_hot(y,depth=n_classes)
     y_hot=np.array(y_hot)
@@ -339,7 +211,6 @@ def SMNN(bis,y,epochs,init_weights=[],verbose=False):
     #%%
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Dense(n_classes, activation="softmax",use_bias=False, input_shape=(input_dim,)))
-    #loss = tf.keras.losses.CategoricalCrossentropy(reduction=tf.keras.losses.Reduction.NONE)
 
     model.compile(optimizer="Adam",loss="categorical_crossentropy",metrics=["accuracy"])
     if init_weights!=[]:

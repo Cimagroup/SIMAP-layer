@@ -36,14 +36,16 @@ intermediate_layer_model = Model(inputs=model.input,
 intermediate_output = intermediate_layer_model.predict(train_images)
 
 X=intermediate_output
+dim = np.shape(X[0])[0]
+print(dim)
+
 X_centered = X-X.mean()
-X_scaled = (X_centered-X_centered.min())/(X_centered.max()-X_centered.min())
+X_scaled = (dim/2)*(X_centered-X_centered.min())/(X_centered.max()-X_centered.min())
 
 X_train=X_scaled
 data = X_train
 bar_iterations=2
-dim = np.shape(data[0])[0]
-print(dim)
+
 d=itek_barycentrics(data,bar_iterations)
 
 
@@ -58,7 +60,7 @@ y_hot=np.array(y_hot)
 
 
 verbose = True
-epochs = 500
+epochs = 10
 model0,history0=SMNN(bis[0],y_train,epochs,verbose =verbose)
 print(model0.evaluate(bis[0],y_hot))
 vsi = [bis_cons(itek_barycentrics(sups[i],i),i,dim) for i in range(bar_iterations)]
@@ -94,12 +96,12 @@ plt.show()
 
 #%% Test evaluation
 
-intermediate_output = intermediate_layer_model.predict(test_images)
+intermediate_output_test = intermediate_layer_model.predict(test_images)
 
-X=intermediate_output
-X_centered = X-X.mean()
-X_scaled = (X_centered-X_centered.min())/(X_centered.max()-X_centered.min())
-X_test=X_scaled
+X_test=intermediate_output_test
+X_centered_test = X_test-X_test.mean()
+X_scaled_test = (dim/2)*(X_centered_test-X_centered.min())/(X_centered_test.max()-X_centered_test.min())
+X_test=X_scaled_test
 
 data_test = X_test
 
